@@ -1,0 +1,40 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;          -- Biblioteca IEEE para funções aritméticas
+
+entity ULA is
+   generic(
+		datawidth : natural := 8
+	);
+
+	port
+	(
+		-- Input ports
+		A	: in  std_logic_vector(datawidth-1 DOWNTO 0);
+		B	: in   std_logic_vector(datawidth-1 DOWNTO 0);
+		OPCODE	: in std_logic_vector(2 DOWNTO 0);
+
+		-- Output ports
+		Y	: out std_logic_vector(datawidth-1 DOWNTO 0);
+		Igual	: out std_logic
+	);
+end entity;
+
+architecture comportamento of ULA is
+begin
+	Y <= 	std_logic_vector(to_unsigned(to_integer(unsigned(A)) + to_integer(unsigned(B)), Y'length)) when OPCODE = "001" else --MAIS
+			std_logic_vector(to_unsigned(to_integer(unsigned(A)) - to_integer(unsigned(B)), Y'length)) when OPCODE = "010" else --MENOS
+			A AND B when OPCODE = "011" else --AND
+			A OR B when OPCODE = "100" else --OR
+			NOT A when OPCODE = "101" else --NOT
+			A XOR B when OPCODE = "110" else --XOR
+			(others => 'X');
+			
+			
+	Igual <= '1' when ((A = B) and (OPCODE = "11")) else '0';
+					  
+					  
+					  
+						
+	  
+end architecture;

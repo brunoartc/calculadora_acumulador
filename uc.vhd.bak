@@ -1,0 +1,70 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+
+entity uc is
+
+	generic (
+        dataWidth : natural := 8;
+		  instrucWidth : natural := 16
+    );
+
+		port (
+
+        instruc : In std_logic_vector(3 downto 0);
+		  
+
+--		  jump_mux: out std_logic;
+--		  acumulador_mux : out std_logic;
+--		  sel_mux_ula: out std_logic;
+--		  ula_op : out std_logic_vector(2 downto 0);
+--		  imediato: out std_logic_vector(dataWidth - 1 downto 0);
+--		  enable_acumulador: out std_logic;
+
+			pontosDeControle: out std_logic_vector(7 downto 0)
+		  
+        --pcReset : out std_logic
+		  
+  
+		  
+    );
+
+end entity uc;
+
+
+architecture rtl of uc is
+
+
+
+
+
+		constant beq_inst: std_logic_vector(3 downto 0) := "0001";
+		constant jmp_inst: std_logic_vector(3 downto 0) := "0010";
+		constant load_inst: std_logic_vector(3 downto 0) := "0011";
+
+	 alias jump_mux : std_logic is pontosDeControle(0);
+	 alias jump_beq : std_logic is pontosDeControle(1);
+	 
+	 alias sel_mux_ula : std_logic is pontosDeControle(2);
+	 alias enable_acumulador : std_logic is pontosDeControle(3);
+	 
+	 alias acumulador_mux : std_logic is pontosDeControle(4);
+	 
+	 alias ula_op : std_logic_vector is pontosDeControle(7 downto 5);
+	 
+	 --acresentar o read enable eo write enable
+	 
+ 
+begin
+
+	jump_beq <= '1' when instruc = beq_inst else '0'; 
+	
+	jump_mux <= '1' when instruc = jmp_inst else '0';
+	
+	
+	sel_mux_ula <= '0' when instruc = load_inst else '1';
+	
+	acumulador_mux <= '1' when instruc = load_inst else '0';
+	
+	enable_acumulador <= '1' when instruc = load_inst else '0';
+	 
+end architecture rtl;

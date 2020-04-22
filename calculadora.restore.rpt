@@ -1,0 +1,95 @@
+Restore Archived Project report for calculadora
+Mon Apr 20 15:51:11 2020
+Quartus Prime Version 19.1.0 Build 670 09/22/2019 SJ Lite Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Restore Archived Project Summary
+  3. Restore Archived Project Messages
+  4. Files Restored
+  5. Files Not Restored
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2019  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and any partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
+
+
+
++-------------------------------------------------------------------------+
+; Restore Archived Project Summary                                        ;
++---------------------------------+---------------------------------------+
+; Restore Archived Project Status ; Successful - Mon Apr 20 15:51:11 2020 ;
+; Revision Name                   ; calculadora                           ;
+; Top-level Entity Name           ; calculadora                           ;
+; Family                          ; Cyclone IV E                          ;
++---------------------------------+---------------------------------------+
+
+
++-----------------------------------+
+; Restore Archived Project Messages ;
++-----------------------------------+
+Info: Successfully restored '/home/bruno/Downloads/calculadora_v1.0.qar' into the '/home/bruno/Downloads/calculadora_v1.0_restored/' directory
+Info: Generated report 'calculadora.restore.rpt'
+Info (23030): Evaluation of Tcl script /home/bruno/intelFPGA_lite/19.1/quartus/common/tcl/apps/qpm/qar.tcl was successful
+Info: Quartus Prime Shell was successful. 0 errors, 22 warnings
+    Info: Peak virtual memory: 1039 megabytes
+    Info: Processing ended: Mon Apr 20 15:51:11 2020
+    Info: Elapsed time: 00:00:00
+    Info: Total CPU time (on all processors): 00:00:00
+
+
++----------------+
+; Files Restored ;
++----------------+
+; File Name      ;
++----------------+
+
+
++-------------------------+
+; Files Not Restored      ;
++-------------------------+
+; File Name               ;
++-------------------------+
+; qar_info.json           ;
+; PC.vhd                  ;
+; ULA.vhd                 ;
+; acumulador.vhd          ;
+; assignment_defaults.qdf ;
+; calc.vhd                ;
+; calc_proc.vhd           ;
+; calculadora.qpf         ;
+; calculadora.qsf         ;
+; conversorHex7Seg.vhd    ;
+; decodificador2x4.vhd    ;
+; fluxo_de_dados.vhd      ;
+; interfaceCHAVES.vhd     ;
+; interfaceLEDs.vhd       ;
+; memoriaRAM.vhd          ;
+; memoriaROM.vhd          ;
+; muxGenerico2x1.vhd      ;
+; registradorGenerico.vhd ;
+; soma1.vhd               ;
+; somaConstante.vhd       ;
+; uc.vhd                  ;
++-------------------------+
+
+

@@ -1,0 +1,32 @@
+-- Quartus Prime VHDL Template
+-- Barrel Shifter
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity shift is
+
+	generic
+	(
+		dataWidth : natural := 8;
+	);
+
+	port 
+	(
+		clk			: in std_logic;
+		din			: in std_logic_vector(dataWidth -1 downto 0);
+		dout			: in std_logic_vector(dataWidth -1 downto 0);
+		
+	);
+
+end entity;
+
+architecture rtl of shift is
+
+
+begin
+
+	dout <= din(0) & din(dataWidth - 1 downto 1)
+
+end rtl;

@@ -1,0 +1,270 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+
+entity fluxo_d is
+    
+    generic (
+        dataWidth : natural := 8;
+		  instrucWidth : natural := 16
+    );
+
+    port (
+	 pontosDeControle_out: out std_logic_vector(13 downto 0);
+		  inst_out: out std_logic_vector(4 downto 0);
+		  
+		  ram_read_enable: out std_logic;
+		  
+		  ram_write_enable: out std_logic;
+		  
+		  ula_op_out: out std_logic_vector(3 downto 0);
+		  
+		  ula_out: out std_logic_vector(dataWidth - 1 downto 0);
+		  
+		  entrada_accumulador: out std_logic_vector(dataWidth - 1 downto 0);
+		  
+		  data_f_out: out std_logic_vector(instrucWidth - 1 downto 0);
+		  
+		  imediato_out: out std_logic_vector(dataWidth - 1 downto 0);
+		  data_out: out std_logic_vector(dataWidth - 1 downto 0);
+		  igual_flag_out: out std_logic;
+		  menor_flag_out: out std_logic;
+		  a_ula: out std_logic_vector(dataWidth - 1 downto 0);
+		  b_ula: out std_logic_vector(dataWidth - 1 downto 0);
+		  pc_out: out std_logic_vector(dataWidth - 1 downto 0);
+		  return_add_out: out std_logic_vector(dataWidth - 1 downto 0)
+		  pontosDeControle: out std_logic_vector(13 downto 0);
+		inst: in std_logic_vector(dataWidth - 1 downto 0)
+		  
+		  
+    );
+end entity fluxo_d;
+
+
+architecture rtl of fluxo_d is
+    
+    signal PC_ROM : std_logic_vector(dataWidth - 1 downto 0);
+    signal ROM_INC : std_logic_vector(dataWidth - 1 downto 0);
+    signal INC_MUX, mux_imediato_jal_out, return_add : std_logic_vector(dataWidth - 1 downto 0);
+    signal MUX_PC : std_logic_vector(dataWidth - 1 downto 0);
+    signal JMPAND_OR : std_logic;
+	 signal JMPOR_MUX : std_logic;
+	 signal ULA_JMPAND : std_logic;
+    signal MUX_ULA : std_logic_vector(dataWidth - 1 downto 0);
+    signal ULentradaA_MUX : std_logic_vector(dataWidth - 1 downto 0);
+    signal MUX_ACUMULADOR : std_logic_vector(dataWidth - 1 downto 0);
+    signal ACUMULADOR_OUT : std_logic_vector(dataWidth - 1 downto 0);
+	 signal acc_out : std_logic_vector(dataWidth - 1 downto 0);
+	 signal DATA_FLOW : std_logic_vector(instrucWidth - 1 downto 0);
+	 signal flag_menor, flag_carry, flag_carry_reg, flag_igual, flag_menor_reg, flag_igual_reg: std_logic;
+	 signal enable_flags, enable_carry: std_logic;
+	 
+	  signal pontosDeControle: std_logic_vector(13 downto 0);
+	 
+	 
+	 signal JMPFLAG: std_logic;
+	 
+	 alias jump_mux : std_logic is pontosDeControle(0);
+	 alias jump_beq : std_logic is pontosDeControle(1);
+	 alias sel_mux_ula : std_logic is pontosDeControle(2);
+	 alias enable_acumulador : std_logic is pontosDeControle(3);
+	 alias acumulador_mux : std_logic is pontosDeControle(4);
+	 
+	 alias jump_bgt : std_logic is pontosDeControle(5);
+	 
+	 alias ram_read: std_logic is pontosDeControle(6);
+	 
+	 alias ram_write: std_logic is pontosDeControle(7);
+	 
+	 alias ula_op : std_logic_vector is pontosDeControle(11 downto 8);
+	 
+	 alias enable_jal : std_logic is pontosDeControle(12);
+	 
+	 alias enable_ret : std_logic is pontosDeControle(13);
+	 
+	 alias op_code : std_logic_vector(4 downto 0) is DATA_FLOW(4 downto 0);
+	 
+	 alias immediato : std_logic_vector(7 downto 0) is DATA_FLOW(12 downto 5);
+	 
+	 alias inst : std_logic_vector (4 downto 0) is DATA_FLOW(4 downto 0);
+
+begin
+	inst_out <= inst;
+	pc_out <= MUX_PC;
+	
+	data_f_out <= DATA_FLOW;
+	
+	ram_read_enable <= ram_read;
+	
+	ram_write_enable <= ram_write;
+	
+	entrada_accumulador <= MUX_ACUMULADOR ;
+	
+	ula_out <= ULentradaA_MUX;
+	
+	menor_flag_out <= flag_menor_reg;
+	
+	igual_flag_out <= flag_igual_reg;
+	
+	enable_flags <= '1' when ula_op = "0111" else '0';
+	
+	enable_carry <= '1' when ula_op = "0001" or ula_op = "0010" or ula_op = "1000" else '0';
+	
+	
+	
+	
+	
+	ula_op_out <= ula_op;
+	
+	return_add_out <= return_add;
+	
+
+	JMPFLAG <= jump_mux or jump_beq or jump_bgt or enable_jal or enable_ret;
+	
+	
+	
+	 UC : entity work.UC
+	 port map (
+	     instruc => inst,
+		  pontosDeControle => pontosDeControle,
+		  igual_flag => flag_igual_reg,
+		  flag_menor => flag_menor_reg
+		  
+	 );
+	 
+	 
+	
+    ROM : entity work.memoriaROM
+    port map (
+        Endereco => PC_ROM,
+        Dado => DATA_FLOW
+    );
+
+    INC : entity work.soma1
+    port map (
+        entrada => PC_ROM,
+        saida => INC_MUX 
+    );
+
+    muxjump : entity work.muxGenerico2x1
+    port map (
+        entradaA_MUX => INC_MUX,
+        entradaB_MUX  => mux_imediato_jal_out,
+        seletor_MUX => JMPFLAG,
+        saida_MUX => MUX_PC
+    );
+	 
+	 
+	 mux_imediato_jal: entity work.muxGenerico2x1
+    port map (
+        entradaA_MUX => immediato,
+        entradaB_MUX  => return_add,
+        seletor_MUX => enable_ret,
+        saida_MUX => mux_imediato_jal_out
+    );
+
+    PC : entity work.PC
+    port map ( 
+        clock => clock,
+        input => MUX_PC,
+        output => PC_ROM,
+        reset => pcReset
+    );
+    
+
+    muxUla : entity work.muxGenerico2x1
+    port map (
+        entradaA_MUX => data_In,
+        entradaB_MUX => immediato,
+        seletor_MUX => sel_mux_ula,
+        saida_MUX => MUX_ULA
+    );
+
+    muxacumulador : entity work.muxGenerico2x1
+    port map (
+        entradaA_MUX => data_In ,
+        entradaB_MUX => ULentradaA_MUX,
+        seletor_MUX => acumulador_mux,
+        saida_MUX => MUX_ACUMULADOR
+    );
+
+    Acumulador : entity work.RegistradorGenerico
+    port map (
+        DIN => MUX_ACUMULADOR,
+        DOUT => acc_out,
+        ENABLE => enable_acumulador,
+        CLK => clock,
+		  RST => '0'
+    );
+	 
+	 ULA : entity work.ULA
+	 port map (
+	     A => MUX_ULA,
+		  B => acc_out,
+		  Y => ULentradaA_MUX,
+		  OPCODE => ula_op,
+		  igual_flag => flag_igual,
+		  A_MENOR_B => flag_menor,
+		  carry => flag_carry,
+		  carry_in => flag_carry_reg
+	 );
+	 
+	 
+	 a_ula <= MUX_ULA;
+	 b_ula <= acc_out;
+	 
+	 data_Out <= acc_out;
+	 
+	 
+	
+	 
+	 
+	 JAL : entity work.registradorGenerico
+    port map (
+        DIN => INC_MUX,
+        DOUT => return_add,
+        ENABLE => enable_jal,
+        CLK => clock,
+		  RST => '0'
+    );
+	 
+	 
+	
+	 
+	 maior : entity work.registradorGenericoBit
+    port map (
+        DIN => flag_menor,
+        DOUT => flag_menor_reg,
+        ENABLE => enable_flags,
+        CLK => clock,
+		  RST => '0'
+    );
+	 
+	 
+	 igual : entity work.registradorGenericoBit
+    port map (
+        DIN => flag_igual,
+        DOUT => flag_igual_reg,
+        ENABLE => enable_flags,
+        CLK => clock,
+		  RST => '0'
+    );
+	 
+	 
+	 carry : entity work.registradorGenericoBit
+    port map (
+        DIN => flag_carry,
+        DOUT => flag_carry_reg,
+        ENABLE => enable_carry,
+        CLK => clock,
+		  RST => '0'
+    );
+	 
+	 
+	 
+	imediato_out <= immediato;
+	
+	pontosDeControle_out <= pontosDeControle;
+	 
+
+	 
+end architecture rtl;

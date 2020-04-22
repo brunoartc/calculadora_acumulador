@@ -1,0 +1,173 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;          -- Biblioteca IEEE para funções aritméticas
+
+entity fluxo_dados is
+   generic(
+		datawidth : natural := 8
+	);
+
+	port
+	(
+	HEX0, HEX1, HEX2, HEX3 : OUT STD_LOGIC_VECTOR(6 downto 0) := (others => '0');
+	SW: IN STD_LOGIC_VECTOR(17 downto 0);
+	KEY: IN STD_LOGIC_VECTOR(3 downto 0);
+	pso: out std_logic_vector(13 downto 0);
+	immediato_out : out std_logic_vector(7 downto 0);
+	CLOCK_50: in std_logic;
+	inst_out: out std_logic_vector(4 downto 0);
+	data_f_out: out std_logic_vector(16 - 1 downto 0);
+	out_acc: out std_logic_vector(datawidth - 1 downto 0);
+	data_out_out: out std_logic_vector(datawidth - 1 downto 0);
+	hab_chave_low: out std_logic;
+	return_add_out: out std_logic_vector(datawidth - 1 downto 0);
+	
+	ula_op_out: out std_logic_vector(3 downto 0);
+	
+	ula_out: out std_logic_vector(dataWidth - 1 downto 0);
+	
+	a_ula: out std_logic_vector(dataWidth - 1 downto 0);
+   b_ula: out std_logic_vector(dataWidth - 1 downto 0);
+	
+	entrada_accumulador: out std_logic_vector(dataWidth - 1 downto 0);
+	maior_flag_out: out std_logic;
+	
+	igual_flag_out: out std_logic;
+	
+
+	pc_out: out std_logic_vector(dataWidth - 1 downto 0)
+	
+
+	);
+end entity;
+
+architecture comportamento of fluxo_dados is
+signal ram_out, data_out, data_out_proc: std_logic_vector(7 downto 0);
+signal dhx_0, dhx_1, dhx_2, dhx_3: std_logic_vector(7 downto 0);
+signal habilita: std_logic_vector(8 downto 0);
+
+signal ps: std_logic_vector(13 downto 0);
+
+alias hab_ram: std_logic is habilita(0);
+	alias hab_chaves_low_0_7: std_logic is habilita(1);
+	alias hab_chaves_high_8_15: std_logic is habilita(2);
+	alias hab_chaves_modo_15_17: std_logic is habilita(3);
+	alias hab_but_next: std_logic is habilita(4);
+	alias hab_dis1: std_logic is habilita(5);
+	alias hab_dis2: std_logic is habilita(6);
+	alias hab_dis3: std_logic is habilita(7);
+	alias hab_dis4: std_logic is habilita(8);
+	
+	signal re, we, ram_read_enable, ram_write_enable: std_logic;
+	
+	signal imediato_out: std_logic_vector(7 downto 0);
+	
+	
+	
+	
+begin
+
+
+	hab_chave_low <= hab_chaves_low_0_7;
+	immediato_out <= imediato_out;
+	pso <= ps;
+	out_acc <= data_out_proc;
+
+	data_out_out <= data_out;
+
+	 
+	 
+	 DECOOD : entity work.decodificador
+  port map (
+	 endereco  => imediato_out,
+	 read_en =>	 ram_read_enable,
+	 write_en => ram_write_enable,
+    habilita => habilita,
+	 we => we,
+	 re => re
+  );
+					
+					
+					
+	 
+	 
+	 
+	 HEX00 : entity work.registradorGenerico
+					port map( 
+							din => data_out_proc,
+							dout => dhx_0, 
+							ENABLE => hab_dis1,
+							clk => CLOCK_50,
+							RST => '0'
+					);
+	HEX11 : entity work.registradorGenerico
+					port map( 
+							din => data_out_proc,
+							dout => dhx_1, 
+							ENABLE => hab_dis2,
+							clk => CLOCK_50,
+							RST => '0'
+					);
+					
+					
+					
+					D0 : entity work.conversorHex7seg 
+					port map 
+						(
+						saida7seg => HEX0,
+						dadoHex => dhx_0(3 downto 0)
+						);
+					D1 : entity work.conversorHex7seg 
+					port map 
+						(
+						saida7seg => HEX1,
+						dadoHex => dhx_0(7 downto 4)
+						);
+					
+					D2 : entity work.conversorHex7seg 
+					port map 
+						(
+						saida7seg => HEX2,
+						dadoHex =>  dhx_1(3 downto 0)
+						);	 
+					D3 : entity work.conversorHex7seg 
+					port map 
+						(
+						saida7seg => HEX3,
+						dadoHex => dhx_1(7 downto 4)
+						);	
+						
+						
+						
+				RAM : entity work.memoriaRAM	
+					port map
+    (
+        addr     => imediato_out,
+        we       => we,
+		  re       => re,
+		  habilita => hab_ram, 
+        clk      => CLOCK_50,
+        dado_in  => data_out_proc,
+        dado_out => ram_out
+    );
+					
+					
+					
+					
+					
+	data_out <= ram_out;
+	
+	data_out <= SW(7 downto 0) when hab_chaves_low_0_7 = '1' else (others => 'Z');
+	
+	data_out <= SW(15 downto 8) when hab_chaves_high_8_15 = '1' else (others => 'Z');
+
+	
+	data_out <= "00000" & SW(17 downto 15) when hab_chaves_modo_15_17 = '1' else (others => 'Z');
+	
+	data_out <= "0000000" & KEY(0) when hab_but_next = '1' else (others => 'Z');
+	
+
+					
+						
+	  
+end architecture;

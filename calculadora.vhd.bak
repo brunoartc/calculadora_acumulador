@@ -1,0 +1,22 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;          -- Biblioteca IEEE para funções aritméticas
+
+entity calculadora is
+   generic(
+		datawidth : natural := 8
+	);
+
+	port
+	(
+
+	);
+end entity;
+
+architecture comportamento of calculadora is
+begin
+
+	  
+						
+	  
+end architecture;

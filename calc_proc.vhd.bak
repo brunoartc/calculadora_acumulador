@@ -1,0 +1,145 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+
+entity calc_proc is
+    
+    generic (
+        dataWidth : natural := 8;
+		  instrucWidth : natural := 16
+    );
+
+    port (
+
+        clock : In std_logic;
+        data_In: In std_logic_vector(dataWidth - 1 downto 0);
+        pcReset : in std_logic;
+		  
+		  pontosDeControle_out: out std_logic_vector(6 downto 0);
+		  jump_mux_old: in std_logic;
+		  acumulador_mux_old : in std_logic;
+		  sel_mux_ula_old: in std_logic;
+		  ula_op_old : in std_logic_vector(2 downto 0);
+		  
+		  
+		  
+		  imediato: In std_logic_vector(dataWidth - 1 downto 0);
+		  enable_acumulador_old: in std_logic;
+		  
+		  DATA_FLOW : out std_logic_vector(instrucWidth - 1 downto 0);
+        addr_Out : Out std_logic_vector(instrucWidth - 1 downto 0);
+        data_Out : Out std_logic_vector(dataWidth - 1 downto 0)
+    );
+end entity calc_proc;
+
+
+architecture rtl of calc_proc is
+    
+    signal PC_ROM : std_logic_vector(dataWidth - 1 downto 0);
+    signal ROM_INC : std_logic_vector(dataWidth - 1 downto 0);
+    signal INC_MUX : std_logic_vector(dataWidth - 1 downto 0);
+    signal MUX_PC : std_logic_vector(dataWidth - 1 downto 0);
+    signal JMPAND_OR : std_logic;
+	 signal JMPOR_MUX : std_logic;
+	 signal igual_flag : std_logic;
+	 signal ULA_JMPAND : std_logic;
+    signal MUX_ULA : std_logic_vector(dataWidth - 1 downto 0);
+    signal ULentradaA_MUX : std_logic_vector(dataWidth - 1 downto 0);
+    signal MUX_ACUMULADOR : std_logic_vector(dataWidth - 1 downto 0);
+    signal ACUMULADOR_OUT : std_logic_vector(dataWidth - 1 downto 0);
+	 
+	  signal pontosDeControle: std_logic_vector(7 downto 0);
+	 
+	 
+	 signal JMPFLAG: std_logic;
+	 
+	 alias jump_mux : std_logic is pontosDeControle(0);
+	 alias jump_beq : std_logic is pontosDeControle(1);
+	 alias sel_mux_ula : std_logic is pontosDeControle(2);
+	 alias enable_acumulador : std_logic is pontosDeControle(3);
+	 alias acumulador_mux : std_logic is pontosDeControle(4);
+	 
+	 alias ula_op : std_logic_vector is pontosDeControle(7 downto 5);
+
+begin
+
+	JMPFLAG <= jump_mux or (jump_beq and igual_flag);
+	
+	
+    ROM : entity work.memoriaROM
+    port map (
+        Endereco => PC_ROM,
+        Dado => DATA_FLOW
+    );
+
+    INC : entity work.soma1
+    port map (
+        entrada => PC_ROM,
+        saida => INC_MUX 
+    );
+
+    muxjump : entity work.muxGenerico2x1
+    port map (
+        entradaA_MUX => INC_MUX,
+        entradaB_MUX  => imediato,
+        seletor_MUX => JMPFLAG,
+        saida_MUX => MUX_PC
+    );
+
+    PC : entity work.PC
+    port map ( 
+        clock => clock,
+        input => MUX_PC,
+        output => PC_ROM,
+        reset => pcReset
+    );
+    
+
+    muxUla : entity work.muxGenerico2x1
+    port map (
+        entradaA_MUX => data_In,
+        entradaB_MUX => imediato,
+        seletor_MUX => sel_mux_ula,
+        saida_MUX => MUX_ULA
+    );
+
+    muxacumulador : entity work.muxGenerico2x1
+    port map (
+        entradaA_MUX => data_In ,
+        entradaB_MUX => ULentradaA_MUX,
+        seletor_MUX => acumulador_mux,
+        saida_MUX => MUX_ACUMULADOR
+    );
+
+    Acumulador : entity work.Acumulador
+    port map (
+        DIN => MUX_ACUMULADOR,
+        DOUT => ACUMULADOR_OUT,
+        ENABLE => enable_acumulador,
+        CLK => clock
+    );
+	 
+	 ULA : entity work.ULA
+	 port map (
+	     A => MUX_ULA,
+		  B => ACUMULADOR_OUT,
+		  Y => ULentradaA_MUX,
+		  OPCODE => ula_op,
+		  Igual => igual_flag
+	 );
+	 
+	 data_Out <= ACUMULADOR_OUT;
+	 
+	 
+	 UC : entity work.UC
+	 port map (
+	     instruc => "0000",
+		  pontosDeControle => pontosDeControle
+		  
+	 );
+	 
+	 data_Out <= ACUMULADOR_OUT;
+
+	 
+
+	 
+end architecture rtl;

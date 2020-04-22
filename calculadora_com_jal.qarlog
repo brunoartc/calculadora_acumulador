@@ -1,0 +1,38 @@
+Quartus Prime Archive log --	/home/bruno/Downloads/calculadora_v1.0_restored/calculadora_com_jal.qarlog
+
+Archive:	/home/bruno/Downloads/calculadora_v1.0_restored/calculadora_com_jal.qar
+Date:		Sun Apr 19 10:52:12 2020
+Quartus Prime		19.1.0 Build 670 09/22/2019 SJ Lite Edition
+
+	=========== Files Selected: ===========
+/home/bruno/Downloads/calculadora_v1.0_restored/PC.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/ULA.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/Waveform.vwf
+/home/bruno/Downloads/calculadora_v1.0_restored/Waveform1.vwf
+/home/bruno/Downloads/calculadora_v1.0_restored/Waveform2.vwf
+/home/bruno/Downloads/calculadora_v1.0_restored/Waveform3.vwf
+/home/bruno/Downloads/calculadora_v1.0_restored/acumulador.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/assignment_defaults.qdf
+/home/bruno/Downloads/calculadora_v1.0_restored/calc.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/calc_proc.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/calculadora.qpf
+/home/bruno/Downloads/calculadora_v1.0_restored/calculadora.qsf
+/home/bruno/Downloads/calculadora_v1.0_restored/calculadora.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/calculadora_assignment_defaults.qdf
+/home/bruno/Downloads/calculadora_v1.0_restored/conversorHex7Seg.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/decodificador.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/decodificador2x4.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/flags_jump.vwf
+/home/bruno/Downloads/calculadora_v1.0_restored/fluxo_de_dados.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/memoriaRAM.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/memoriaROM.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/muxGenerico2x1.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/registradorGenerico.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/shift.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/soma1.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/somaConstante.vhd
+/home/bruno/Downloads/calculadora_v1.0_restored/uc.vhd
+	======= Total: 27 files to archive =======
+
+	================ Status: ===============
+All files archived successfully.

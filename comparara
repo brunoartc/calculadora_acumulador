@@ -1,0 +1,82 @@
+001000000100
+001000011011
+000000000101
+001000000100
+000000000100
+000001101100
+000011101100
+000000101100
+000000000010
+
+
+
+001000000100"; --  10[input] 0 000[low_keys]    io_sw_high    load  0100     load chaves maiores para o acumulador
+001000011011"; --- 10[input] 0 001[high keys] io_sw_low       add   1011     chaves menores com acumulador (maiores)
+000000000101"; --- 00[RAM] 0 000                              store 0101
+001000000100"; --- 10[input] 0 000[low_keys]    io_sw_high    load  0100     load chaves maiores para o acumulador so para limpar o 6
+000000000100"; --- 00[RAM] 0 000[endereco]   $0               load  0100     load endereco 0 para o acumulador
+000001101100"; --- comparacao com seis tem que setar o zero flag
+000011101100"; --- comparacao com 14 nao tem que setar o zero flag
+000000101100"; --- comparacao com 14 nao tem que setar o zero flag
+000000000010"; --- jmp para o zero
+
+
+fazer o shift -- ja fiz o shift mas nao sei pra onde que sai as informacoes ******
+
+fazer o cristal liquido <- operacao selecionada
+
+pilha <- mais interessante
+
+jmp sub rotna <- armazenar o pc em um registrador novo para voltar na chamada de rotina hablita o cara com o pc + 1 e uma instrucao return pra voltar ( mais interessante)
+
+isso esta sendo feito mas fata completar o uc*******
+
+
+a ula com others => 'Z' nao sei se funciona
+
+
+pc_out <= PC_ROM
+
+
+ula sem tristate => colocar um pass ou algo do genero 
+
+
+
+data_out_out com warnings tri state estranho
+
+
+
+ULA como fazer
+
+vide print [[
+    
+    no ouitro pc
+]]
+
+
+colocar um registrador na ula
+
+
+
+coloca zero no shift
+
+em vez do rotate
+
+duas isntrucoes uma pra esrever o high e uma pra escrever o low 
+
+
+duas instrucoes de saida
+
+
+por o fluxo de dados em uma uma coisa separa
+
+
+
+
+
+
+
+
+
+
+
